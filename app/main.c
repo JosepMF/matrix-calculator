@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "matrixlib.h"
-#include "meta_matrix.h"
+#include "../lib/matrixlib.h"
+#include "../lib/meta_matrix.h"
 
 int main()
 {

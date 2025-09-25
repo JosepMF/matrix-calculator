@@ -1,24 +1,37 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11
+CFLAGS = -Wall -Wextra -Ilib
 
-OBJS = main.o matrixlib.o meta_matrix.o
-TARGET = project
+APP_DIR = app
+LIB_DIR = lib
+OBJ_DIR = build
 
+APP_SRC = $(wildcard $(APP_DIR)/*.c)
+LIB_SRC = $(wildcard $(LIB_DIR)/*.c)
+
+APP_OBJ = $(patsubst $(APP_DIR)/%.c, $(OBJ_DIR)/%.o,$(APP_SRC))
+LIB_OBJ = $(patsubst $(LIB_DIR)/%.c,$(OBJ_DIR)/%.o,$(LIB_SRC))
+
+TARGET = xmatrixcalc
+STATIC_LIB = $(OBJ_DIR)/matrixlib.a
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+$(TARGET): $(STATIC_LIB) $(APP_OBJ)
+	$(CC) $(APP_OBJ) $(STATIC_LIB) -o $@
 
+$(STATIC_LIB): $(LIB_OBJ)
+	ar rcs $@ $^
 
-main.o: main.c matrixlib.h
-	$(CC) $(CFLAGS) -c main.c
+$(OBJ_DIR)/%.o: $(APP_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-matrixlib.o: matrixlib.c matrixlib.h
-	$(CC) $(CFLAGS) -c matrixlib.c
+$(OBJ_DIR)/%.o: $(LIB_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-meta_matrix.o: meta_matrix.c meta_matrix.h
-	$(CC) $(CFLAGS) -c meta_matrix.c
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
 
 clean:
-	rm -f *.o $(TARGET)
+	rm -rf $(OBJ_DIR) $(TARGET)
+
+rebuild: clean all
