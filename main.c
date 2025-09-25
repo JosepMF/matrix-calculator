@@ -104,7 +104,7 @@ int main()
             running_program = 0;
             break;
         case 5:
-            order_by_left_zeros(&matrix_obj);
+            echelon_matrix(&matrix_obj);
             break;
         default:
             printf("Comando no valido\n");

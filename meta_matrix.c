@@ -41,3 +41,24 @@ void order_by_left_zeros(struct matrix_s* matrix_obj)
     }
 }
 
+void echelon_matrix(struct matrix_s* matrix_obj)
+{
+    order_by_left_zeros(matrix_obj);
+
+    for (int i = 0; i < matrix_obj->row; i++)
+    {
+        int pibot_col = get_left_row_zeros(i, matrix_obj);
+        float pibot_number = get_value_from_matrix(i, pibot_col, matrix_obj);
+
+        if (pibot_col == matrix_obj->col) continue; // si hay el mismo número de ceros que de columnas pasa
+
+        for (int j = i + 1; j < matrix_obj->row; j++)
+        {
+            float down_pibot_number = get_value_from_matrix(j, pibot_col, matrix_obj);
+
+            if(down_pibot_number == 0) continue; // si el elemento debajo de la fila es 0 se rompe el bucle ya que no habrán más numeros no nulos a bajo
+
+            add_multiple_row(i,j,-down_pibot_number/pibot_number,matrix_obj);
+        }
+    }    
+}
